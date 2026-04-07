@@ -1,0 +1,20 @@
+{
+  "name": "Ledgerly — Expense Tracker",
+  "short_name": "Ledgerly",
+  "description": "Personal expense tracker",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a1a1a",
+  "theme_color": "#4a7c59",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "utilities"]
+}
