@@ -3,6 +3,9 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   plugins: [tsconfigPaths()],
+  define: {
+    "import.meta.env.VITE_API_URL": JSON.stringify("https://ledgerly-service.vercel.app"),
+  },
   test: {
     globals: true,
     environment: "jsdom",
