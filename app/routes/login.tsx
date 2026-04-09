@@ -28,6 +28,13 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm text-center">
         <div className="mb-8">
+          <img
+            src="/ledgerly.png"
+            alt="Ledgerly"
+            width={80}
+            height={80}
+            className="mx-auto mb-4"
+          />
           <h1 className="text-4xl font-bold text-foreground">Ledgerly</h1>
           <p className="mt-2 text-muted-foreground">
             Personal Expense Tracker

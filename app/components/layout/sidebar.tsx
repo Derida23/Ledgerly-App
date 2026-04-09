@@ -30,11 +30,11 @@ export function Sidebar() {
 
   return (
     <aside className="hidden md:flex md:flex-col md:fixed md:inset-y-3 md:left-3 md:z-30 md:w-16 lg:w-60 md:rounded-2xl md:border md:border-border/60 md:bg-card md:shadow-sm">
-      <div className="flex h-14 items-center px-4">
-        <h2 className="hidden lg:block text-lg font-bold text-foreground">
+      <div className="flex h-14 items-center gap-2.5 px-4">
+        <img src="/ledgerly.png" alt="Ledgerly" className="h-7 w-7 shrink-0" />
+        <span className="hidden lg:block text-lg font-bold text-foreground">
           Ledgerly
-        </h2>
-        <span className="lg:hidden text-lg font-bold text-primary">L</span>
+        </span>
       </div>
 
       <nav className="flex-1 overflow-y-auto py-4" role="navigation">
