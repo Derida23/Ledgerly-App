@@ -1,87 +1,132 @@
-# Welcome to React Router!
+# Ledgerly
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Personal expense tracker PWA built with React Router v7.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## Stack
 
-## Features
-
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+| Layer | Tech |
+|-------|------|
+| Framework | React Router v7 (SPA mode) |
+| Language | TypeScript (strict) |
+| Styling | Tailwind CSS v4 + shadcn/ui |
+| Data Fetching | TanStack Query v5 |
+| Forms | React Hook Form + Zod |
+| Charts | Recharts (lazy loaded) |
+| Auth | Better Auth (Google OAuth) |
+| Testing | Vitest + RTL + MSW + Playwright |
+| Deploy | Vercel |
 
 ## Getting Started
 
-### Installation
+### Prerequisites
 
-Install the dependencies:
+- Node.js 20+
+- pnpm 9+
+
+### Install
 
 ```bash
-npm install
+pnpm install
 ```
+
+### Environment
+
+```bash
+cp .env.development .env.local
+```
+
+| Variable | Description |
+|----------|-------------|
+| `VITE_API_URL` | Backend API base URL |
 
 ### Development
 
-Start the development server with HMR:
+```bash
+pnpm dev
+```
+
+App runs at `http://localhost:5173`. API requests are proxied to the backend via Vite.
+
+### Testing
 
 ```bash
-npm run dev
+pnpm test            # Run all unit/integration tests
+pnpm test:watch      # Watch mode
+pnpm test:coverage   # With coverage report
+pnpm test:e2e        # Playwright E2E tests
 ```
 
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
+### Build
 
 ```bash
-npm run build
+pnpm build
 ```
 
-## Deployment
+Output: `build/client/` (static SPA)
 
-### Docker Deployment
-
-To build and run using Docker:
+### Preview production build
 
 ```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+pnpm build && pnpm start
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
+Runs at `http://localhost:3001`.
 
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
+## Deploy to Vercel
 
-### DIY Deployment
+1. Push repo to GitHub
+2. Import in Vercel dashboard
+3. Set environment variable: `VITE_API_URL` = `https://ledgerly-service.vercel.app`
+4. Deploy (config auto-detected from `vercel.json`)
 
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
+| Setting | Value |
+|---------|-------|
+| Build Command | `pnpm run build` |
+| Output Directory | `build/client` |
+| Framework | Other |
 
-Make sure to deploy the output of `npm run build`
+## Project Structure
 
 ```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+app/
+  routes/          # React Router file-based routes
+  modules/         # Feature modules (auth, wallets, categories, transactions, budgets, recurrings, reports)
+    <module>/
+      api/         # API functions + query keys
+      types/       # TypeScript types + Zod schemas
+      hooks/       # React Query hooks
+      components/  # Module-specific components
+  components/
+    ui/            # shadcn/ui primitives
+    layout/        # Sidebar, bottom nav, header
+    shared/        # Cross-module components
+  lib/             # Utilities (api-client, formatters, hooks)
+tests/
+  mocks/           # MSW handlers + server
+  e2e/             # Playwright tests
+  helpers.tsx      # Test utilities
 ```
 
-## Styling
+## Features
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+- Google OAuth login with role-based access (ADMIN / VIEWER)
+- Wallet management with balance tracking
+- Income/expense transactions with payment methods
+- Transfer between wallets
+- Budget tracking with category breakdown
+- Recurring transaction reminders
+- Reports: weekly, monthly, yearly with charts
+- Dark/light mode with system preference
+- Balance visibility toggle
+- PWA: installable, offline capable
+- Responsive: mobile bottom nav, tablet/desktop sidebar
 
----
+## API
 
-Built with ❤️ using React Router.
+Backend: [ledgerly-service.vercel.app](https://ledgerly-service.vercel.app)
+
+API docs: [ledgerly-service.vercel.app/docs](https://ledgerly-service.vercel.app/docs)
+
+## License
+
+Private
