@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown, BarChart3 } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
@@ -12,12 +12,16 @@ import {
   useYearlyReport,
 } from "~/modules/reports/hooks";
 import {
-  CategoryPieChart,
   CategoryBreakdown,
   WalletBreakdown,
-  TrendLineChart,
 } from "~/modules/reports/components";
 import type { ReportResponse } from "~/modules/reports/types";
+
+const CategoryPieChart = lazy(() =>
+  import("~/modules/reports/components/pie-chart").then((m) => ({
+    default: m.CategoryPieChart,
+  })),
+);
 
 type Period = "weekly" | "monthly" | "yearly";
 
@@ -180,7 +184,9 @@ function ReportContent({
             <h3 className="mb-3 text-sm font-semibold text-foreground">
             Pengeluaran per Kategori
           </h3>
-          <CategoryPieChart data={report.categoryBreakdown} />
+          <Suspense fallback={<div className="h-64 animate-pulse rounded-xl bg-muted" />}>
+            <CategoryPieChart data={report.categoryBreakdown} />
+          </Suspense>
           </CardContent>
         </Card>
       )}
