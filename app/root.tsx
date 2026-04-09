@@ -26,10 +26,6 @@ export const links: Route.LinksFunction = () => [
     href: "https://fonts.gstatic.com",
     crossOrigin: "anonymous",
   },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap",
-  },
   { rel: "manifest", href: "/manifest.json" },
   { rel: "icon", href: "/icons/icon.svg", type: "image/svg+xml" },
   { rel: "apple-touch-icon", href: "/icons/icon.svg" },
@@ -41,10 +37,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Ledgerly — Personal Expense Tracker</title>
+        <meta name="description" content="Kelola keuangan pribadimu dengan mudah. Catat pemasukan, pengeluaran, budget, dan laporan keuangan." />
         <meta name="theme-color" content="#4a7c59" />
         <meta name="mobile-web-app-capable" content="yes" />
         <Meta />
         <Links />
+        {/* Non-render-blocking font: preload + media swap trick */}
+        <link
+          rel="preload"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          as="style"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          media="print"
+          data-font-swap=""
+        />
+        <script dangerouslySetInnerHTML={{ __html: `document.querySelectorAll('[data-font-swap]').forEach(function(l){l.media='all'})` }} />
       </head>
       <body className="font-sans antialiased bg-background text-foreground">
         {children}
@@ -52,6 +64,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
+  );
+}
+
+export function HydrateFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="flex flex-col items-center gap-3">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-muted border-t-primary" />
+        <p className="text-sm text-muted-foreground">Memuat...</p>
+      </div>
+    </div>
   );
 }
 
@@ -67,11 +90,14 @@ export default function App() {
       <Outlet />
       <InstallPrompt />
       <Toaster
-        position="bottom-center"
-        className="md:!top-4 md:!right-4 md:!bottom-auto md:!left-auto"
+        position="top-center"
+        toastOptions={{
+          className: "!bg-card !text-foreground !border-border !shadow-lg",
+        }}
         richColors
         closeButton
         duration={3000}
+        offset={16}
       />
       {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
