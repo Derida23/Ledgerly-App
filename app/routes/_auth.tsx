@@ -1,6 +1,8 @@
-import { useEffect } from "react";
-import { Outlet, redirect, isRouteErrorResponse, useNavigate } from "react-router";
-import { authClient, useSession } from "~/modules/auth/api";
+import { Outlet, redirect, isRouteErrorResponse, useNavigation } from "react-router";
+import { authClient } from "~/modules/auth/api";
+import { AuthContext } from "~/modules/auth/hooks";
+import type { User } from "~/modules/auth/types";
+import { apiClient } from "~/lib/api-client";
 import { Sidebar } from "~/components/layout/sidebar";
 import { BottomNav } from "~/components/layout/bottom-nav";
 import { SessionExpiredModal } from "~/components/shared/session-expired-modal";
@@ -16,40 +18,41 @@ export async function clientLoader({}: Route.ClientLoaderArgs) {
     if (!session.data) {
       throw redirect("/");
     }
-    return { session: session.data };
+    const profile = await apiClient<{ user: User }>("/api/me");
+    return { user: profile.user };
   } catch (error) {
     if (error instanceof Response) throw error;
     throw redirect("/");
   }
 }
 
-export default function AuthLayout() {
-  const { data: session, isPending } = useSession();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isPending && !session) {
-      navigate("/");
-    }
-  }, [session, isPending, navigate]);
+export default function AuthLayout({ loaderData }: Route.ComponentProps) {
+  const navigation = useNavigation();
+  const isNavigating = navigation.state === "loading";
 
   return (
-    <ThemeProvider>
-      <SaldoVisibilityProvider>
-        <div className="min-h-screen bg-background">
-          <Sidebar />
+    <AuthContext.Provider value={{ user: loaderData.user }}>
+      <ThemeProvider>
+        <SaldoVisibilityProvider>
+          <div className="min-h-screen bg-muted/40">
+            <Sidebar />
 
-          <div className="md:pl-16 lg:pl-60">
-            <ModuleErrorBoundary level="page">
-              <Outlet />
-            </ModuleErrorBoundary>
+            <div className="md:pl-22 lg:pl-66">
+              <div className="min-h-screen bg-card md:my-3 md:mr-3 md:min-h-[calc(100vh-1.5rem)] md:rounded-2xl md:border md:border-border/60 md:shadow-sm">
+                <ModuleErrorBoundary level="page">
+                  <div className={isNavigating ? "opacity-50 transition-opacity duration-150 will-change-[opacity]" : "opacity-100 transition-opacity duration-200 will-change-[opacity]"}>
+                    <Outlet />
+                  </div>
+                </ModuleErrorBoundary>
+              </div>
+            </div>
+
+            <BottomNav />
+            <SessionExpiredModal />
           </div>
-
-          <BottomNav />
-          <SessionExpiredModal />
-        </div>
-      </SaldoVisibilityProvider>
-    </ThemeProvider>
+        </SaldoVisibilityProvider>
+      </ThemeProvider>
+    </AuthContext.Provider>
   );
 }
 

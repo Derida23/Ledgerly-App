@@ -42,6 +42,10 @@ export async function apiClient<T>(
     throw new AuthError("Session expired");
   }
 
+  if (response.status === 403) {
+    throw new ApiError(403, "Kamu tidak memiliki izin untuk melakukan aksi ini");
+  }
+
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
     const message =
