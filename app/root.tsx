@@ -27,8 +27,9 @@ export const links: Route.LinksFunction = () => [
     crossOrigin: "anonymous",
   },
   { rel: "manifest", href: "/manifest.json" },
-  { rel: "icon", href: "/ledgerly.png", type: "image/png" },
-  { rel: "apple-touch-icon", href: "/ledgerly-background.png" },
+  { rel: "icon", href: "/icons/icon-192.png", type: "image/png", sizes: "192x192" },
+  { rel: "icon", href: "/icons/icon-512.png", type: "image/png", sizes: "512x512" },
+  { rel: "apple-touch-icon", href: "/icons/icon-192-maskable.png", sizes: "192x192" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
