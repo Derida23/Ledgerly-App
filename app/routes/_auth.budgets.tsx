@@ -19,7 +19,7 @@ export default function BudgetsPage() {
           isAdmin ? (
             <Link
               to="/budgets/new"
-              className="rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-foreground"
+              className="cursor-pointer rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-foreground active:bg-accent active:text-foreground"
               aria-label="Tambah budget"
             >
               <Plus className="h-5 w-5" />
@@ -27,7 +27,7 @@ export default function BudgetsPage() {
           ) : undefined
         }
       />
-      <main className="p-4 pb-20 md:pb-4">
+      <main className="p-4 pb-24 md:pb-4">
         {isLoading ? (
           <div className="space-y-4">
             {Array.from({ length: 2 }).map((_, i) => (

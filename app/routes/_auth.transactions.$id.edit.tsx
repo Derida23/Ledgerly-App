@@ -36,10 +36,10 @@ export default function TransactionEditPage() {
   return (
     <section>
       <Header title="Edit Transaksi" backHref="/transactions" />
-      <main className="mx-auto max-w-lg p-4 pb-20 md:pb-4">
+      <main className="p-4 pb-24 md:pb-4">
         {isLoading ? (
-          <div className="space-y-4">
-            {Array.from({ length: 5 }).map((_, i) => (
+          <div className="grid w-full gap-4 md:grid-cols-2">
+            {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="h-10 animate-pulse rounded-lg bg-muted" />
             ))}
           </div>
@@ -48,6 +48,7 @@ export default function TransactionEditPage() {
             type={type}
             transaction={transaction}
             onSubmit={handleSubmit}
+            onCancel={() => navigate("/transactions")}
             isPending={isPending}
           />
         ) : (

@@ -20,16 +20,18 @@ export default function CategoryEditPage() {
   return (
     <section>
       <Header title="Edit Kategori" backHref="/categories" />
-      <main className="mx-auto max-w-lg p-4 pb-20 md:pb-4">
+      <main className="p-4 pb-24 md:pb-4">
         {isLoading ? (
-          <div className="space-y-4">
+          <div className="grid w-full gap-4 md:grid-cols-2">
             <div className="h-10 animate-pulse rounded-lg bg-muted" />
             <div className="h-10 animate-pulse rounded-lg bg-muted" />
+            <div className="h-24 animate-pulse rounded-lg bg-muted md:col-span-2" />
           </div>
         ) : category ? (
           <CategoryForm
             category={category}
             onSubmit={handleSubmit}
+            onCancel={() => navigate("/categories")}
             isPending={isPending}
           />
         ) : (

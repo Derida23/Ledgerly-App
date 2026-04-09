@@ -17,8 +17,8 @@ export default function BudgetNewPage() {
   return (
     <section>
       <Header title="Tambah Budget" backHref="/budgets" />
-      <main className="mx-auto max-w-lg p-4 pb-20 md:pb-4">
-        <BudgetForm onSubmit={handleSubmit} isPending={isPending} />
+      <main className="p-4 pb-24 md:pb-4">
+        <BudgetForm onSubmit={handleSubmit} onCancel={() => navigate("/budgets")} isPending={isPending} />
       </main>
     </section>
   );

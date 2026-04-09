@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown } from "lucide-react";
+import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown, BarChart3 } from "lucide-react";
+import { Card, CardContent } from "~/components/ui/card";
+import { Button } from "~/components/ui/button";
 import { cn, formatRupiah, formatDate } from "~/lib/utils";
 import { useSaldoVisibility } from "~/lib/saldo-visibility";
 import { Header } from "~/components/layout/header";
+import { EmptyState } from "~/components/shared/empty-state";
 import {
   useWeeklyReport,
   useMonthlyReport,
@@ -42,7 +45,7 @@ export default function ReportsPage() {
   return (
     <section>
       <Header title="Laporan" />
-      <main className="p-4 pb-20 md:pb-4 space-y-4">
+      <main className="p-4 pb-24 md:pb-4 space-y-4">
         <div className="flex gap-1 rounded-lg bg-muted p-1">
           {(
             [
@@ -70,41 +73,57 @@ export default function ReportsPage() {
         </div>
 
         <div className="flex items-center justify-between">
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9"
             onClick={() => setDateOffset((o) => o - 1)}
-            className="rounded-lg p-2 text-muted-foreground hover:bg-accent"
             aria-label="Periode sebelumnya"
           >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-          <span className="text-sm font-medium text-foreground">
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <span className="text-sm font-semibold text-foreground">
             {getPeriodLabel(period, dateOffset)}
           </span>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-9 w-9"
             onClick={() => setDateOffset((o) => o + 1)}
             disabled={dateOffset >= 0}
-            className="rounded-lg p-2 text-muted-foreground hover:bg-accent disabled:opacity-30"
             aria-label="Periode berikutnya"
           >
-            <ChevronRight className="h-5 w-5" />
-          </button>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
         </div>
 
         {current.isLoading ? (
           <ReportSkeleton />
         ) : current.isError ? (
-          <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4 text-center">
-            <p className="font-medium">Gagal memuat laporan</p>
-            <button
-              onClick={() => current.refetch()}
-              className="mt-3 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-            >
-              Coba Lagi
-            </button>
-          </div>
+          <Card>
+            <CardContent className="py-8 text-center">
+              <p className="font-medium text-foreground">Gagal memuat laporan</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {current.error?.message ?? "Terjadi kesalahan"}
+              </p>
+              <Button
+                size="sm"
+                className="mt-4"
+                onClick={() => current.refetch()}
+              >
+                Coba Lagi
+              </Button>
+            </CardContent>
+          </Card>
         ) : report ? (
           <ReportContent report={report} period={period} />
-        ) : null}
+        ) : (
+          <EmptyState
+            icon={BarChart3}
+            message="Belum ada data"
+            description="Laporan akan muncul setelah ada transaksi di periode ini"
+          />
+        )}
       </main>
     </section>
   );
@@ -156,21 +175,31 @@ function ReportContent({
       )}
 
       {report.categoryBreakdown.length > 0 && (
-        <div className="rounded-xl border border-border bg-card p-4">
-          <h3 className="mb-3 text-sm font-semibold text-foreground">
+        <Card>
+          <CardContent className="pt-5">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">
             Pengeluaran per Kategori
           </h3>
           <CategoryPieChart data={report.categoryBreakdown} />
-        </div>
+          </CardContent>
+        </Card>
       )}
 
-      <div className="rounded-xl border border-border bg-card p-4">
-        <CategoryBreakdown data={report.categoryBreakdown} />
-      </div>
+      {report.categoryBreakdown.length > 0 && (
+        <Card>
+          <CardContent className="pt-5">
+            <CategoryBreakdown data={report.categoryBreakdown} />
+          </CardContent>
+        </Card>
+      )}
 
-      <div className="rounded-xl border border-border bg-card p-4">
-        <WalletBreakdown data={report.walletBreakdown} />
-      </div>
+      {report.walletBreakdown.length > 0 && (
+        <Card>
+          <CardContent className="pt-5">
+            <WalletBreakdown data={report.walletBreakdown} />
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
@@ -187,12 +216,14 @@ function SummaryCard({
   color: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-3 text-center">
-      <p className="text-[10px] text-muted-foreground">{label}</p>
-      <p className={cn("mt-1 text-sm font-bold", color)}>
-        {isVisible ? formatRupiah(value) : "••••"}
-      </p>
-    </div>
+    <Card>
+      <CardContent className="p-3 text-center">
+        <p className="text-[10px] font-medium text-muted-foreground">{label}</p>
+        <p className={cn("mt-1 text-sm font-bold tabular-nums", color)}>
+          {isVisible ? formatRupiah(value) : "••••"}
+        </p>
+      </CardContent>
+    </Card>
   );
 }
 

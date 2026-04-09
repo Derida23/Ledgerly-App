@@ -15,7 +15,7 @@ export default function RecurringsPage() {
           isAdmin ? (
             <Link
               to="/recurrings/new"
-              className="rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-foreground"
+              className="cursor-pointer rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-foreground active:bg-accent active:text-foreground"
               aria-label="Tambah recurring"
             >
               <Plus className="h-5 w-5" />
@@ -23,7 +23,7 @@ export default function RecurringsPage() {
           ) : undefined
         }
       />
-      <main className="p-4 pb-20 md:pb-4">
+      <main className="p-4 pb-24 md:pb-4">
         <RecurringList />
       </main>
     </section>

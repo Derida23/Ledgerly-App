@@ -20,9 +20,9 @@ export default function WalletEditPage() {
   return (
     <section>
       <Header title="Edit Wallet" backHref="/wallets" />
-      <main className="mx-auto max-w-lg p-4 pb-20 md:pb-4">
+      <main className="p-4 pb-24 md:pb-4">
         {isLoading ? (
-          <div className="space-y-4">
+          <div className="grid w-full gap-4 md:grid-cols-2">
             <div className="h-10 animate-pulse rounded-lg bg-muted" />
             <div className="h-10 animate-pulse rounded-lg bg-muted" />
           </div>
@@ -30,6 +30,7 @@ export default function WalletEditPage() {
           <WalletForm
             wallet={wallet}
             onSubmit={handleSubmit}
+            onCancel={() => navigate("/wallets")}
             isPending={isPending}
           />
         ) : (

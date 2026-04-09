@@ -17,8 +17,8 @@ export default function WalletNewPage() {
   return (
     <section>
       <Header title="Tambah Wallet" backHref="/wallets" />
-      <main className="mx-auto max-w-lg p-4 pb-20 md:pb-4">
-        <WalletForm onSubmit={handleSubmit} isPending={isPending} />
+      <main className="p-4 pb-24 md:pb-4">
+        <WalletForm onSubmit={handleSubmit} onCancel={() => navigate("/wallets")} isPending={isPending} />
       </main>
     </section>
   );

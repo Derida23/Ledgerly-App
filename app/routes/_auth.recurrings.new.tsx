@@ -17,8 +17,8 @@ export default function RecurringNewPage() {
   return (
     <section>
       <Header title="Tambah Recurring" backHref="/recurrings" />
-      <main className="mx-auto max-w-lg p-4 pb-20 md:pb-4">
-        <RecurringForm onSubmit={handleSubmit} isPending={isPending} />
+      <main className="p-4 pb-24 md:pb-4">
+        <RecurringForm onSubmit={handleSubmit} onCancel={() => navigate("/recurrings")} isPending={isPending} />
       </main>
     </section>
   );

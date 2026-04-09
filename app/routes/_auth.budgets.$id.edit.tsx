@@ -20,17 +20,18 @@ export default function BudgetEditPage() {
   return (
     <section>
       <Header title="Edit Budget" backHref="/budgets" />
-      <main className="mx-auto max-w-lg p-4 pb-20 md:pb-4">
+      <main className="p-4 pb-24 md:pb-4">
         {isLoading ? (
-          <div className="space-y-4">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-10 animate-pulse rounded-lg bg-muted" />
-            ))}
+          <div className="grid w-full gap-4 md:grid-cols-2">
+            <div className="h-10 animate-pulse rounded-lg bg-muted" />
+            <div className="h-10 animate-pulse rounded-lg bg-muted" />
+            <div className="h-16 animate-pulse rounded-lg bg-muted md:col-span-2" />
           </div>
         ) : budget ? (
           <BudgetForm
             budget={budget}
             onSubmit={handleSubmit}
+            onCancel={() => navigate("/budgets")}
             isPending={isPending}
           />
         ) : (

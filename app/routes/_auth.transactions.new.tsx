@@ -17,8 +17,7 @@ export default function TransactionNewPage() {
     note: searchParams.get("note") ?? undefined,
   };
 
-  const title =
-    type === "INCOME" ? "Tambah Pemasukan" : "Tambah Pengeluaran";
+  const title = type === "INCOME" ? "Tambah Pemasukan" : "Tambah Pengeluaran";
 
   function handleSubmit(data: CreateTransactionInput) {
     mutate(data, {
@@ -29,11 +28,12 @@ export default function TransactionNewPage() {
   return (
     <section>
       <Header title={title} backHref="/transactions" />
-      <main className="mx-auto max-w-lg p-4 pb-20 md:pb-4">
+      <main className="p-4 pb-24 md:pb-4">
         <TransactionForm
           type={type}
           defaultValues={defaultValues}
           onSubmit={handleSubmit}
+          onCancel={() => navigate("/transactions")}
           isPending={isPending}
         />
       </main>

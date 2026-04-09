@@ -19,10 +19,11 @@ export default function CategoryNewPage() {
   return (
     <section>
       <Header title="Tambah Kategori" backHref="/categories" />
-      <main className="mx-auto max-w-lg p-4 pb-20 md:pb-4">
+      <main className="p-4 pb-24 md:pb-4">
         <CategoryForm
           defaultType={defaultType}
           onSubmit={handleSubmit}
+          onCancel={() => navigate("/categories")}
           isPending={isPending}
         />
       </main>

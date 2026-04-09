@@ -13,7 +13,7 @@ export default function WalletDetailPage() {
   return (
     <section>
       <Header title={wallet?.name ?? "Detail Wallet"} backHref="/wallets" />
-      <main className="mx-auto max-w-lg p-4 pb-20 md:pb-4">
+      <main className="p-4 pb-24 md:pb-4">
         {isLoading ? (
           <div className="space-y-4">
             <div className="h-32 animate-pulse rounded-xl bg-muted" />

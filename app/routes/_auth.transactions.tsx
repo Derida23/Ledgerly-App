@@ -20,7 +20,7 @@ export default function TransactionsPage() {
             <div className="relative">
               <button
                 onClick={() => setShowMenu(!showMenu)}
-                className="rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-foreground"
+                className="cursor-pointer rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-foreground active:bg-accent active:text-foreground"
                 aria-label="Tambah transaksi"
               >
                 <Plus className="h-5 w-5" />
@@ -64,7 +64,7 @@ export default function TransactionsPage() {
           ) : undefined
         }
       />
-      <main className="p-4 pb-20 md:pb-4">
+      <main className="p-4 pb-24 md:pb-4">
         <TransactionList initialFilters={{ walletId }} />
       </main>
     </section>

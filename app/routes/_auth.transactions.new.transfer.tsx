@@ -26,10 +26,11 @@ export default function TransferNewPage() {
   return (
     <section>
       <Header title="Transfer" backHref="/transactions" />
-      <main className="mx-auto max-w-lg p-4 pb-20 md:pb-4">
+      <main className="p-4 pb-24 md:pb-4">
         <TransferForm
           defaultValues={defaultValues}
           onSubmit={handleSubmit}
+          onCancel={() => navigate("/transactions")}
           isPending={isPending}
         />
       </main>
