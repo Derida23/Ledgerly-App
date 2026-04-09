@@ -50,14 +50,14 @@ export function BudgetCard({ budget, onDelete, isDeleting }: BudgetCardProps) {
             <div className="flex gap-1 shrink-0 ml-2">
               <Link
                 to={`/budgets/${budget.id}/edit`}
-                className="rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
+                className="cursor-pointer rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground active:bg-accent active:text-foreground"
                 aria-label={`Edit ${budget.name}`}
               >
                 <Pencil className="h-4 w-4" />
               </Link>
               <button
                 onClick={() => setShowConfirm(true)}
-                className="rounded-lg p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                className="cursor-pointer rounded-lg p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive active:bg-destructive/10 active:text-destructive"
                 aria-label={`Hapus ${budget.name}`}
               >
                 <Trash2 className="h-4 w-4" />
@@ -76,7 +76,7 @@ export function BudgetCard({ budget, onDelete, isDeleting }: BudgetCardProps) {
 
         <button
           onClick={() => setExpanded(!expanded)}
-          className="mt-3 flex w-full items-center justify-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+          className="mt-3 flex w-full cursor-pointer items-center justify-center gap-1 text-xs text-muted-foreground hover:text-foreground"
         >
           {expanded ? (
             <>

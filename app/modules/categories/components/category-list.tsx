@@ -32,10 +32,10 @@ export function CategoryList() {
             key={tab.value}
             onClick={() => setActiveTab(tab.value)}
             className={cn(
-              "flex-1 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors",
+              "flex-1 cursor-pointer rounded-xl px-4 py-2.5 text-sm font-medium shadow-sm transition-colors",
               activeTab === tab.value
-                ? "border-primary bg-primary/10 text-primary"
-                : "border-border text-muted-foreground hover:bg-accent",
+                ? "bg-primary/10 text-primary shadow-primary/10"
+                : "bg-card text-muted-foreground hover:bg-accent",
             )}
           >
             {tab.label}
@@ -59,7 +59,7 @@ export function CategoryList() {
       ) : !categories?.length ? (
         <EmptyState icon={Tag} message="Belum ada kategori" />
       ) : (
-        <ul className="space-y-1">
+        <ul className="grid gap-3 md:grid-cols-2">
           {categories.map((category) => (
             <CategoryItem
               key={category.id}
@@ -90,7 +90,7 @@ function CategoryItem({
 
   return (
     <>
-      <li className="group flex items-center justify-between rounded-lg px-3 py-3 transition-colors hover:bg-accent/50">
+      <li className="group flex items-center justify-between rounded-xl bg-card px-4 py-3 shadow-sm transition-colors">
         <div className="flex items-center gap-3">
           <span className="text-xl" role="img" aria-label={category.name}>
             {category.icon}
@@ -101,17 +101,17 @@ function CategoryItem({
         </div>
 
         {isAdmin && (
-          <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+          <div className="flex gap-1">
             <Link
               to={`/categories/${category.id}/edit`}
-              className="rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
+              className="cursor-pointer rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground active:bg-accent active:text-foreground"
               aria-label={`Edit ${category.name}`}
             >
               <Pencil className="h-4 w-4" />
             </Link>
             <button
               onClick={() => setShowConfirm(true)}
-              className="rounded-lg p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+              className="cursor-pointer rounded-lg p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive active:bg-destructive/10 active:text-destructive"
               aria-label={`Hapus ${category.name}`}
             >
               <Trash2 className="h-4 w-4" />
@@ -134,9 +134,9 @@ function CategoryItem({
 
 function CategoryListSkeleton() {
   return (
-    <div className="space-y-2">
+    <div className="grid gap-3 md:grid-cols-2">
       {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="flex items-center gap-3 px-3 py-3">
+        <div key={i} className="flex items-center gap-3 rounded-lg px-3 py-3">
           <div className="h-8 w-8 animate-pulse rounded-lg bg-muted" />
           <div className="h-4 w-28 animate-pulse rounded bg-muted" />
         </div>

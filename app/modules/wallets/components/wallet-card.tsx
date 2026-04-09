@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { Pencil, Trash2, Wallet as WalletIcon } from "lucide-react";
+import { Card } from "~/components/ui/card";
+import { Button } from "~/components/ui/button";
 import { cn, formatRupiah } from "~/lib/utils";
 import { useSaldoVisibility } from "~/lib/saldo-visibility";
 import { useIsAdmin } from "~/modules/auth/hooks";
@@ -20,25 +22,29 @@ export function WalletCard({ wallet, onDelete, isDeleting }: WalletCardProps) {
 
   return (
     <>
-      <article className="group relative rounded-xl border border-border bg-card p-4 shadow-sm transition-colors hover:bg-accent/50">
+      <Card className="group relative p-4 transition-colors active:bg-accent/30">
         <Link to={`/wallets/${wallet.id}`} className="block">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
               <WalletIcon
                 className="h-5 w-5 text-primary"
                 aria-hidden="true"
               />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-foreground truncate">
+              <p className="text-sm font-medium text-foreground truncate">
                 {wallet.name}
               </p>
               <p
                 className={cn(
-                  "text-lg font-semibold",
-                  wallet.balance >= 0 ? "text-success" : "text-destructive",
+                  "text-lg font-bold tabular-nums",
+                  wallet.balance >= 0 ? "text-foreground" : "text-destructive",
                 )}
-                aria-label={isVisible ? formatRupiah(wallet.balance) : "Saldo tersembunyi"}
+                aria-label={
+                  isVisible
+                    ? formatRupiah(wallet.balance)
+                    : "Saldo tersembunyi"
+                }
               >
                 {isVisible ? formatRupiah(wallet.balance) : "Rp ••••••••"}
               </p>
@@ -47,27 +53,29 @@ export function WalletCard({ wallet, onDelete, isDeleting }: WalletCardProps) {
         </Link>
 
         {isAdmin && (
-          <div className="absolute right-3 top-3 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-0.5">
             <Link
               to={`/wallets/${wallet.id}/edit`}
-              className="rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
               aria-label={`Edit ${wallet.name}`}
+              className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground active:bg-accent active:text-foreground"
             >
-              <Pencil className="h-4 w-4" />
+              <Pencil className="h-3.5 w-3.5" />
             </Link>
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 hover:text-destructive active:text-destructive"
               onClick={(e) => {
                 e.preventDefault();
                 setShowConfirm(true);
               }}
-              className="rounded-lg p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
               aria-label={`Hapus ${wallet.name}`}
             >
-              <Trash2 className="h-4 w-4" />
-            </button>
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
           </div>
         )}
-      </article>
+      </Card>
 
       <ConfirmDialog
         open={showConfirm}

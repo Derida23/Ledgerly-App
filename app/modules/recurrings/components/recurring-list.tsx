@@ -53,7 +53,7 @@ export function RecurringList() {
             <Zap className="h-4 w-4 text-warning" aria-hidden="true" />
             Due Hari Ini
           </h2>
-          <ul className="space-y-2">
+          <ul className="grid gap-3 md:grid-cols-2">
             {dueToday.map((r) => (
               <RecurringItem
                 key={r.id}
@@ -73,7 +73,7 @@ export function RecurringList() {
         <h2 className="mb-3 text-sm font-semibold text-foreground">
           Semua Recurring
         </h2>
-        <ul className="space-y-2">
+        <ul className="grid gap-3 md:grid-cols-2">
           {recurrings.map((r) => (
             <RecurringItem
               key={r.id}
@@ -115,7 +115,7 @@ function RecurringItem({
 
   return (
     <>
-      <li className="group flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 shadow-sm">
+      <li className="group flex items-center justify-between rounded-xl bg-card px-4 py-3 shadow-sm">
         <div className="flex items-center gap-3 min-w-0">
           <span className="text-xl shrink-0" role="img" aria-label={r.name}>
             {r.category?.icon ?? "🔄"}
@@ -147,17 +147,17 @@ function RecurringItem({
           )}
 
           {isAdmin && (
-            <div className="flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
+            <div className="flex gap-0.5">
               <Link
                 to={`/recurrings/${r.id}/edit`}
-                className="rounded p-1 text-muted-foreground hover:text-foreground"
+                className="cursor-pointer rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground active:text-foreground"
                 aria-label={`Edit ${r.name}`}
               >
                 <Pencil className="h-3.5 w-3.5" />
               </Link>
               <button
                 onClick={() => setShowConfirm(true)}
-                className="rounded p-1 text-muted-foreground hover:text-destructive"
+                className="cursor-pointer rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive active:text-destructive"
                 aria-label={`Hapus ${r.name}`}
               >
                 <Trash2 className="h-3.5 w-3.5" />
@@ -181,8 +181,8 @@ function RecurringItem({
 
 function RecurringListSkeleton() {
   return (
-    <div className="space-y-3">
-      {Array.from({ length: 4 }).map((_, i) => (
+    <div className="grid gap-3 md:grid-cols-2">
+      {Array.from({ length: 6 }).map((_, i) => (
         <div key={i} className="h-16 animate-pulse rounded-xl bg-muted" />
       ))}
     </div>
