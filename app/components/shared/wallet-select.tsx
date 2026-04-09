@@ -1,19 +1,27 @@
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { cn } from "~/lib/utils";
 import { useWallets } from "~/modules/wallets/hooks";
 
 interface WalletSelectProps {
   value: string;
   onChange: (value: string) => void;
-  id?: string;
   placeholder?: string;
   excludeId?: string;
+  triggerClassName?: string;
 }
 
 export function WalletSelect({
   value,
   onChange,
-  id,
   placeholder = "Pilih wallet",
   excludeId,
+  triggerClassName,
 }: WalletSelectProps) {
   const { data: wallets, isLoading } = useWallets();
 
@@ -21,20 +29,37 @@ export function WalletSelect({
     ? wallets?.filter((w) => w.id !== excludeId)
     : wallets;
 
+  const isEmpty = !isLoading && (!filteredWallets || filteredWallets.length === 0);
+  const selectedWallet = filteredWallets?.find((w) => w.id === value);
+
   return (
-    <select
-      id={id}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
-      disabled={isLoading}
-    >
-      <option value="">{isLoading ? "Memuat..." : placeholder}</option>
-      {filteredWallets?.map((wallet) => (
-        <option key={wallet.id} value={wallet.id}>
-          {wallet.name}
-        </option>
-      ))}
-    </select>
+    <Select value={value} onValueChange={(v) => onChange(v ?? "")} disabled={isLoading || isEmpty}>
+      <SelectTrigger className={cn("w-full", triggerClassName)}>
+        <SelectValue
+          placeholder={
+            isLoading
+              ? "Memuat..."
+              : isEmpty
+                ? "Belum ada wallet"
+                : placeholder
+          }
+        >
+          {selectedWallet ? selectedWallet.name : undefined}
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent>
+        {isEmpty ? (
+          <div className="px-3 py-6 text-center text-sm text-muted-foreground">
+            Belum ada wallet
+          </div>
+        ) : (
+          filteredWallets?.map((wallet) => (
+            <SelectItem key={wallet.id} value={wallet.id}>
+              {wallet.name}
+            </SelectItem>
+          ))
+        )}
+      </SelectContent>
+    </Select>
   );
 }

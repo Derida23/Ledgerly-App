@@ -8,3 +8,5 @@ export { WalletSelect } from "./wallet-select";
 export { OfflineBanner } from "./offline-banner";
 export { InstallPrompt } from "./install-prompt";
 export { UpdateBanner } from "./update-banner";
+export { DatePicker } from "./date-picker";
+export { AccessDenied } from "./access-denied";

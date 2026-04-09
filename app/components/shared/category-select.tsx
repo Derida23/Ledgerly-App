@@ -1,3 +1,11 @@
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { cn } from "~/lib/utils";
 import { useCategories } from "~/modules/categories/hooks";
 import type { CategoryType } from "~/modules/categories/types";
 
@@ -5,33 +13,62 @@ interface CategorySelectProps {
   value: string;
   onChange: (value: string) => void;
   type?: CategoryType;
-  id?: string;
   placeholder?: string;
+  triggerClassName?: string;
 }
 
 export function CategorySelect({
   value,
   onChange,
   type,
-  id,
   placeholder = "Pilih kategori",
+  triggerClassName,
 }: CategorySelectProps) {
   const { data: categories, isLoading } = useCategories(type);
 
+  const isEmpty = !isLoading && (!categories || categories.length === 0);
+  const selectedCategory = categories?.find((c) => c.id === value);
+
   return (
-    <select
-      id={id}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
-      disabled={isLoading}
-    >
-      <option value="">{isLoading ? "Memuat..." : placeholder}</option>
-      {categories?.map((cat) => (
-        <option key={cat.id} value={cat.id}>
-          {cat.icon} {cat.name}
-        </option>
-      ))}
-    </select>
+    <Select value={value} onValueChange={(v) => onChange(v ?? "")} disabled={isLoading || isEmpty}>
+      <SelectTrigger className={cn("w-full", triggerClassName)}>
+        <SelectValue
+          placeholder={
+            isLoading
+              ? "Memuat..."
+              : isEmpty
+                ? "Belum ada kategori"
+                : placeholder
+          }
+        >
+          {selectedCategory ? (
+            <span className="flex items-center gap-2">
+              <span role="img" aria-label={selectedCategory.name}>
+                {selectedCategory.icon}
+              </span>
+              {selectedCategory.name}
+            </span>
+          ) : undefined}
+        </SelectValue>
+      </SelectTrigger>
+      <SelectContent>
+        {isEmpty ? (
+          <div className="px-3 py-6 text-center text-sm text-muted-foreground">
+            Belum ada kategori
+          </div>
+        ) : (
+          categories?.map((cat) => (
+            <SelectItem key={cat.id} value={cat.id}>
+              <span className="flex items-center gap-2">
+                <span role="img" aria-label={cat.name}>
+                  {cat.icon}
+                </span>
+                {cat.name}
+              </span>
+            </SelectItem>
+          ))
+        )}
+      </SelectContent>
+    </Select>
   );
 }
