@@ -1,9 +1,12 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
 import { CurrencyInput } from "~/components/shared/currency-input";
 import { WalletSelect } from "~/components/shared/wallet-select";
 import { CategorySelect } from "~/components/shared/category-select";
-import { todayISO } from "~/lib/utils";
+import { DatePicker } from "~/components/shared/date-picker";
+import { cn, todayISO } from "~/lib/utils";
 import {
   createTransactionSchema,
   PaymentMethod,
@@ -16,6 +19,7 @@ interface TransactionFormProps {
   transaction?: TransactionResponse;
   defaultValues?: Partial<CreateTransactionInput>;
   onSubmit: (data: CreateTransactionInput) => void;
+  onCancel?: () => void;
   isPending: boolean;
 }
 
@@ -31,6 +35,7 @@ export function TransactionForm({
   transaction,
   defaultValues,
   onSubmit,
+  onCancel,
   isPending,
 }: TransactionFormProps) {
   const form = useForm<CreateTransactionInput>({
@@ -40,8 +45,7 @@ export function TransactionForm({
       type,
       walletId: transaction?.wallet.id ?? defaultValues?.walletId ?? "",
       categoryId: transaction?.category?.id ?? defaultValues?.categoryId ?? "",
-      method:
-        transaction?.method ?? defaultValues?.method ?? undefined,
+      method: transaction?.method ?? defaultValues?.method ?? undefined,
       date:
         transaction?.date?.split("T")[0] ??
         defaultValues?.date ??
@@ -54,11 +58,9 @@ export function TransactionForm({
   const isExpense = type === "EXPENSE";
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <label className="mb-1.5 block text-sm font-medium text-foreground">
-          Jumlah
-        </label>
+    <form onSubmit={form.handleSubmit(onSubmit)} className="grid w-full gap-4 md:grid-cols-2">
+      <fieldset className="space-y-2">
+        <label className="text-sm font-medium text-foreground">Jumlah</label>
         <CurrencyInput
           value={form.watch("amount")}
           onValueChange={(val) =>
@@ -66,42 +68,30 @@ export function TransactionForm({
           }
         />
         {form.formState.errors.amount && (
-          <p className="mt-1 text-sm text-destructive">
+          <p className="text-sm text-destructive">
             {form.formState.errors.amount.message}
           </p>
         )}
-      </div>
+      </fieldset>
 
-      <div>
-        <label
-          htmlFor="walletId"
-          className="mb-1.5 block text-sm font-medium text-foreground"
-        >
-          Wallet
-        </label>
+      <fieldset className="space-y-2">
+        <label className="text-sm font-medium text-foreground">Wallet</label>
         <WalletSelect
-          id="walletId"
           value={form.watch("walletId")}
           onChange={(val) =>
             form.setValue("walletId", val, { shouldValidate: true })
           }
         />
         {form.formState.errors.walletId && (
-          <p className="mt-1 text-sm text-destructive">
+          <p className="text-sm text-destructive">
             {form.formState.errors.walletId.message}
           </p>
         )}
-      </div>
+      </fieldset>
 
-      <div>
-        <label
-          htmlFor="categoryId"
-          className="mb-1.5 block text-sm font-medium text-foreground"
-        >
-          Kategori
-        </label>
+      <fieldset className="space-y-2">
+        <label className="text-sm font-medium text-foreground">Kategori</label>
         <CategorySelect
-          id="categoryId"
           type={type}
           value={form.watch("categoryId")}
           onChange={(val) =>
@@ -109,18 +99,28 @@ export function TransactionForm({
           }
         />
         {form.formState.errors.categoryId && (
-          <p className="mt-1 text-sm text-destructive">
+          <p className="text-sm text-destructive">
             {form.formState.errors.categoryId.message}
           </p>
         )}
-      </div>
+      </fieldset>
+
+      <fieldset className="space-y-2">
+        <label className="text-sm font-medium text-foreground">Tanggal</label>
+        <DatePicker
+          value={form.watch("date")}
+          onChange={(val) =>
+            form.setValue("date", val, { shouldValidate: true })
+          }
+        />
+      </fieldset>
 
       {isExpense && (
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-foreground">
+        <fieldset className="space-y-2 md:col-span-2">
+          <label className="text-sm font-medium text-foreground">
             Metode Pembayaran
           </label>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-4 gap-2">
             {METHOD_OPTIONS.map((opt) => (
               <button
                 key={opt.value}
@@ -128,65 +128,55 @@ export function TransactionForm({
                 onClick={() =>
                   form.setValue("method", opt.value, { shouldValidate: true })
                 }
-                className={`rounded-lg border px-3 py-2.5 text-sm font-medium transition-colors ${
+                className={cn(
+                  "h-10 cursor-pointer rounded-lg border text-sm font-medium transition-colors",
                   form.watch("method") === opt.value
                     ? "border-primary bg-primary/10 text-primary"
-                    : "border-border text-muted-foreground hover:bg-accent"
-                }`}
+                    : "border-input text-muted-foreground hover:bg-accent",
+                )}
               >
                 {opt.label}
               </button>
             ))}
           </div>
           {form.formState.errors.method && (
-            <p className="mt-1 text-sm text-destructive">
+            <p className="text-sm text-destructive">
               {form.formState.errors.method.message}
             </p>
           )}
-        </div>
+        </fieldset>
       )}
 
-      <div>
-        <label
-          htmlFor="date"
-          className="mb-1.5 block text-sm font-medium text-foreground"
-        >
-          Tanggal
-        </label>
-        <input
-          id="date"
-          type="date"
-          {...form.register("date")}
-          className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        />
-      </div>
-
-      <div>
-        <label
-          htmlFor="note"
-          className="mb-1.5 block text-sm font-medium text-foreground"
-        >
+      <fieldset className="space-y-2 md:col-span-2">
+        <label className="text-sm font-medium text-foreground">
           Catatan (opsional)
         </label>
-        <input
-          id="note"
+        <textarea
           {...form.register("note")}
           placeholder="Makan siang..."
-          className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          rows={3}
+          className="flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/30 focus-visible:border-ring resize-none"
         />
-      </div>
+      </fieldset>
 
-      <button
-        type="submit"
-        disabled={isPending || !form.formState.isValid}
-        className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
-      >
-        {isPending
-          ? "Menyimpan..."
-          : transaction
-            ? "Simpan Perubahan"
-            : "Tambah Transaksi"}
-      </button>
+      <div className="md:col-span-2 flex flex-col-reverse gap-3 md:flex-row md:justify-end">
+        {onCancel && (
+          <Button type="button" variant="outline" className="w-full md:w-auto md:min-w-32" onClick={onCancel}>
+            Batal
+          </Button>
+        )}
+        <Button
+          type="submit"
+          className="w-full md:w-auto md:min-w-48"
+          disabled={isPending || !form.formState.isValid}
+        >
+          {isPending
+            ? "Menyimpan..."
+            : transaction
+              ? "Simpan Perubahan"
+              : "Tambah Transaksi"}
+        </Button>
+      </div>
     </form>
   );
 }

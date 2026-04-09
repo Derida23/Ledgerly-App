@@ -1,5 +1,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
 import {
   createCategorySchema,
   type CreateCategoryInput,
@@ -11,6 +14,7 @@ interface CategoryFormProps {
   category?: CategoryResponse;
   defaultType?: CategoryType;
   onSubmit: (data: CreateCategoryInput) => void;
+  onCancel?: () => void;
   isPending: boolean;
 }
 
@@ -23,6 +27,7 @@ export function CategoryForm({
   category,
   defaultType,
   onSubmit,
+  onCancel,
   isPending,
 }: CategoryFormProps) {
   const form = useForm<CreateCategoryInput>({
@@ -38,68 +43,26 @@ export function CategoryForm({
   const selectedIcon = form.watch("icon");
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <label
-          htmlFor="name"
-          className="mb-1.5 block text-sm font-medium text-foreground"
-        >
+    <form onSubmit={form.handleSubmit(onSubmit)} className="grid w-full gap-4 md:grid-cols-2">
+      <fieldset className="space-y-2">
+        <label className="text-sm font-medium text-foreground">
           Nama Kategori
         </label>
-        <input
-          id="name"
+        <Input
           {...form.register("name")}
           placeholder="Makanan & Minuman"
-          className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
         {form.formState.errors.name && (
-          <p className="mt-1 text-sm text-destructive">
+          <p className="text-sm text-destructive">
             {form.formState.errors.name.message}
           </p>
         )}
-      </div>
-
-      <div>
-        <label className="mb-1.5 block text-sm font-medium text-foreground">
-          Icon (Emoji)
-        </label>
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-input bg-background text-2xl">
-            {selectedIcon || "?"}
-          </div>
-          <input
-            {...form.register("icon")}
-            placeholder="Ketik emoji..."
-            className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          />
-        </div>
-        <div className="mt-2 flex flex-wrap gap-1.5">
-          {EMOJI_SUGGESTIONS.map((emoji) => (
-            <button
-              key={emoji}
-              type="button"
-              onClick={() =>
-                form.setValue("icon", emoji, { shouldValidate: true })
-              }
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-border text-lg transition-colors hover:bg-accent"
-            >
-              {emoji}
-            </button>
-          ))}
-        </div>
-        {form.formState.errors.icon && (
-          <p className="mt-1 text-sm text-destructive">
-            {form.formState.errors.icon.message}
-          </p>
-        )}
-      </div>
+      </fieldset>
 
       {!category && (
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-foreground">
-            Tipe
-          </label>
-          <div className="flex gap-2">
+        <fieldset className="space-y-2">
+          <label className="text-sm font-medium text-foreground">Tipe</label>
+          <div className="grid grid-cols-2 gap-2">
             {(["EXPENSE", "INCOME"] as const).map((type) => (
               <button
                 key={type}
@@ -107,35 +70,83 @@ export function CategoryForm({
                 onClick={() =>
                   form.setValue("type", type, { shouldValidate: true })
                 }
-                className={`flex-1 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors ${
+                className={cn(
+                  "h-10 cursor-pointer rounded-lg border text-sm font-medium transition-colors",
                   form.watch("type") === type
                     ? "border-primary bg-primary/10 text-primary"
-                    : "border-border text-muted-foreground hover:bg-accent"
-                }`}
+                    : "border-input text-muted-foreground hover:bg-accent",
+                )}
               >
                 {type === "EXPENSE" ? "Pengeluaran" : "Pemasukan"}
               </button>
             ))}
           </div>
           {form.formState.errors.type && (
-            <p className="mt-1 text-sm text-destructive">
+            <p className="text-sm text-destructive">
               {form.formState.errors.type.message}
             </p>
           )}
-        </div>
+        </fieldset>
       )}
 
-      <button
-        type="submit"
-        disabled={isPending || !form.formState.isValid}
-        className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
-      >
-        {isPending
-          ? "Menyimpan..."
-          : category
-            ? "Simpan Perubahan"
-            : "Tambah Kategori"}
-      </button>
+      <fieldset className="space-y-2 md:col-span-2">
+        <label className="text-sm font-medium text-foreground">
+          Icon (Emoji)
+        </label>
+        <div className="relative">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-lg">
+            {selectedIcon || "?"}
+          </span>
+          <Input
+            {...form.register("icon")}
+            placeholder="Pilih atau ketik emoji..."
+            className="pl-10"
+          />
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {EMOJI_SUGGESTIONS.map((emoji) => (
+            <button
+              key={emoji}
+              type="button"
+              onClick={() =>
+                form.setValue("icon", emoji, { shouldValidate: true })
+              }
+              className={cn(
+                "flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border text-lg transition-colors active:bg-accent",
+                selectedIcon === emoji
+                  ? "border-primary bg-primary/10"
+                  : "border-input",
+              )}
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
+        {form.formState.errors.icon && (
+          <p className="text-sm text-destructive">
+            {form.formState.errors.icon.message}
+          </p>
+        )}
+      </fieldset>
+
+      <div className="md:col-span-2 flex flex-col-reverse gap-3 md:flex-row md:justify-end">
+        {onCancel && (
+          <Button type="button" variant="outline" className="w-full md:w-auto md:min-w-32" onClick={onCancel}>
+            Batal
+          </Button>
+        )}
+        <Button
+          type="submit"
+          className="w-full md:w-auto md:min-w-48"
+          disabled={isPending || !form.formState.isValid}
+        >
+          {isPending
+            ? "Menyimpan..."
+            : category
+              ? "Simpan Perubahan"
+              : "Tambah Kategori"}
+        </Button>
+      </div>
     </form>
   );
 }

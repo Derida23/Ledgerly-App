@@ -54,11 +54,11 @@ export interface TransactionFilters {
 // Income / Expense form
 export const createTransactionSchema = z
   .object({
-    amount: z.coerce.number().positive("Jumlah harus lebih dari 0"),
-    type: z.enum(["INCOME", "EXPENSE"]),
+    amount: z.coerce.number({ invalid_type_error: "Harus berupa angka" }).positive("Jumlah harus lebih dari 0"),
+    type: z.enum(["INCOME", "EXPENSE"], { required_error: "Tipe wajib dipilih" }),
     walletId: z.string().min(1, "Wallet wajib dipilih"),
     categoryId: z.string().min(1, "Kategori wajib dipilih"),
-    method: z.enum(["CASH", "QRIS", "TRANSFER", "DEBIT"]).optional(),
+    method: z.enum(["CASH", "QRIS", "TRANSFER", "DEBIT"], { required_error: "Metode wajib dipilih" }).optional(),
     date: z.string().optional(),
     note: z.string().optional(),
   })
@@ -78,10 +78,10 @@ export type CreateTransactionInput = z.infer<typeof createTransactionSchema>;
 // Transfer form
 export const createTransferSchema = z
   .object({
-    amount: z.coerce.number().positive("Jumlah harus lebih dari 0"),
+    amount: z.coerce.number({ invalid_type_error: "Harus berupa angka" }).positive("Jumlah harus lebih dari 0"),
     sourceWalletId: z.string().min(1, "Wallet sumber wajib dipilih"),
     targetWalletId: z.string().min(1, "Wallet tujuan wajib dipilih"),
-    adminFee: z.coerce.number().min(0),
+    adminFee: z.coerce.number({ invalid_type_error: "Harus berupa angka" }).min(0, "Biaya admin tidak boleh negatif"),
     date: z.string().optional(),
     note: z.string().optional(),
   })
@@ -94,9 +94,9 @@ export type CreateTransferInput = z.infer<typeof createTransferSchema>;
 
 // Update (partial, no type change)
 export const updateTransactionSchema = z.object({
-  amount: z.coerce.number().positive("Jumlah harus lebih dari 0").optional(),
-  categoryId: z.string().min(1).optional(),
-  method: z.enum(["CASH", "QRIS", "TRANSFER", "DEBIT"]).optional(),
+  amount: z.coerce.number({ invalid_type_error: "Harus berupa angka" }).positive("Jumlah harus lebih dari 0").optional(),
+  categoryId: z.string().min(1, "Kategori wajib dipilih").optional(),
+  method: z.enum(["CASH", "QRIS", "TRANSFER", "DEBIT"], { required_error: "Metode wajib dipilih" }).optional(),
   date: z.string().optional(),
   note: z.string().optional(),
 });

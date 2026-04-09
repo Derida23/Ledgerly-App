@@ -59,10 +59,10 @@ export const createRecurringSchema = z
 export type CreateRecurringInput = z.infer<typeof createRecurringSchema>;
 
 export const updateRecurringSchema = z.object({
-  name: z.string().min(1).optional(),
-  amount: z.coerce.number().positive().optional(),
-  dayOfMonth: z.coerce.number().min(1).max(31).optional(),
-  walletId: z.string().min(1).optional(),
+  name: z.string().min(1, "Nama wajib diisi").optional(),
+  amount: z.coerce.number({ invalid_type_error: "Harus berupa angka" }).positive("Jumlah harus lebih dari 0").optional(),
+  dayOfMonth: z.coerce.number({ invalid_type_error: "Harus berupa angka" }).min(1, "Minimal tanggal 1").max(31, "Maksimal tanggal 31").optional(),
+  walletId: z.string().min(1, "Wallet wajib dipilih").optional(),
   targetWalletId: z.string().optional(),
   categoryId: z.string().optional(),
 });

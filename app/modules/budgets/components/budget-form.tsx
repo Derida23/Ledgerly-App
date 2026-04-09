@@ -1,5 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { CurrencyInput } from "~/components/shared/currency-input";
 import { useCategories } from "~/modules/categories/hooks";
@@ -12,10 +14,11 @@ import {
 interface BudgetFormProps {
   budget?: BudgetResponse;
   onSubmit: (data: CreateBudgetInput) => void;
+  onCancel?: () => void;
   isPending: boolean;
 }
 
-export function BudgetForm({ budget, onSubmit, isPending }: BudgetFormProps) {
+export function BudgetForm({ budget, onSubmit, onCancel, isPending }: BudgetFormProps) {
   const { data: categories, isLoading: categoriesLoading } =
     useCategories("EXPENSE");
 
@@ -40,29 +43,24 @@ export function BudgetForm({ budget, onSubmit, isPending }: BudgetFormProps) {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <label
-          htmlFor="name"
-          className="mb-1.5 block text-sm font-medium text-foreground"
-        >
+    <form onSubmit={form.handleSubmit(onSubmit)} className="grid w-full gap-4 md:grid-cols-2">
+      <fieldset className="space-y-2">
+        <label className="text-sm font-medium text-foreground">
           Nama Budget
         </label>
-        <input
-          id="name"
+        <Input
           {...form.register("name")}
           placeholder="Budget Bulanan"
-          className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
         {form.formState.errors.name && (
-          <p className="mt-1 text-sm text-destructive">
+          <p className="text-sm text-destructive">
             {form.formState.errors.name.message}
           </p>
         )}
-      </div>
+      </fieldset>
 
-      <div>
-        <label className="mb-1.5 block text-sm font-medium text-foreground">
+      <fieldset className="space-y-2">
+        <label className="text-sm font-medium text-foreground">
           Limit per Bulan
         </label>
         <CurrencyInput
@@ -72,16 +70,14 @@ export function BudgetForm({ budget, onSubmit, isPending }: BudgetFormProps) {
           }
         />
         {form.formState.errors.limit && (
-          <p className="mt-1 text-sm text-destructive">
+          <p className="text-sm text-destructive">
             {form.formState.errors.limit.message}
           </p>
         )}
-      </div>
+      </fieldset>
 
-      <div>
-        <label className="mb-1.5 block text-sm font-medium text-foreground">
-          Kategori
-        </label>
+      <fieldset className="space-y-2 md:col-span-2">
+        <label className="text-sm font-medium text-foreground">Kategori</label>
         {categoriesLoading ? (
           <div className="flex flex-wrap gap-2">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -101,10 +97,10 @@ export function BudgetForm({ budget, onSubmit, isPending }: BudgetFormProps) {
                   type="button"
                   onClick={() => toggleCategory(cat.id)}
                   className={cn(
-                    "inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
+                    "inline-flex cursor-pointer items-center gap-1 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
                     isSelected
                       ? "border-primary bg-primary/10 text-primary"
-                      : "border-border text-muted-foreground hover:bg-accent",
+                      : "border-input text-muted-foreground hover:bg-accent",
                   )}
                 >
                   <span role="img" aria-label={cat.name}>
@@ -117,23 +113,30 @@ export function BudgetForm({ budget, onSubmit, isPending }: BudgetFormProps) {
           </div>
         )}
         {form.formState.errors.categoryIds && (
-          <p className="mt-1 text-sm text-destructive">
+          <p className="text-sm text-destructive">
             {form.formState.errors.categoryIds.message}
           </p>
         )}
-      </div>
+      </fieldset>
 
-      <button
-        type="submit"
-        disabled={isPending || !form.formState.isValid}
-        className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
-      >
-        {isPending
-          ? "Menyimpan..."
-          : budget
-            ? "Simpan Perubahan"
-            : "Tambah Budget"}
-      </button>
+      <div className="md:col-span-2 flex flex-col-reverse gap-3 md:flex-row md:justify-end">
+        {onCancel && (
+          <Button type="button" variant="outline" className="w-full md:w-auto md:min-w-32" onClick={onCancel}>
+            Batal
+          </Button>
+        )}
+        <Button
+          type="submit"
+          className="w-full md:w-auto md:min-w-48"
+          disabled={isPending || !form.formState.isValid}
+        >
+          {isPending
+            ? "Menyimpan..."
+            : budget
+              ? "Simpan Perubahan"
+              : "Tambah Budget"}
+        </Button>
+      </div>
     </form>
   );
 }

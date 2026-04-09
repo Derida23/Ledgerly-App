@@ -1,5 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
 import { CurrencyInput } from "~/components/shared/currency-input";
 import {
   createWalletSchema,
@@ -10,10 +12,11 @@ import {
 interface WalletFormProps {
   wallet?: WalletResponse;
   onSubmit: (data: CreateWalletInput) => void;
+  onCancel?: () => void;
   isPending: boolean;
 }
 
-export function WalletForm({ wallet, onSubmit, isPending }: WalletFormProps) {
+export function WalletForm({ wallet, onSubmit, onCancel, isPending }: WalletFormProps) {
   const form = useForm<CreateWalletInput>({
     resolver: zodResolver(createWalletSchema),
     defaultValues: {
@@ -24,53 +27,65 @@ export function WalletForm({ wallet, onSubmit, isPending }: WalletFormProps) {
   });
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-      <div>
+    <form onSubmit={form.handleSubmit(onSubmit)} className="grid w-full gap-4 md:grid-cols-2">
+      <fieldset className="space-y-2">
         <label
           htmlFor="name"
-          className="mb-1.5 block text-sm font-medium text-foreground"
+          className="text-sm font-medium text-foreground"
         >
           Nama Wallet
         </label>
-        <input
+        <Input
           id="name"
           {...form.register("name")}
           placeholder="Bank Mandiri"
-          className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
         {form.formState.errors.name && (
-          <p className="mt-1 text-sm text-destructive">
+          <p className="text-sm text-destructive">
             {form.formState.errors.name.message}
           </p>
         )}
-      </div>
+      </fieldset>
 
-      <div>
+      <fieldset className="space-y-2">
         <label
           htmlFor="initialBalance"
-          className="mb-1.5 block text-sm font-medium text-foreground"
+          className="text-sm font-medium text-foreground"
         >
           Saldo Awal
         </label>
         <CurrencyInput
           id="initialBalance"
           value={form.watch("initialBalance")}
-          onValueChange={(val) => form.setValue("initialBalance", val, { shouldValidate: true })}
+          onValueChange={(val) =>
+            form.setValue("initialBalance", val, { shouldValidate: true })
+          }
         />
         {form.formState.errors.initialBalance && (
-          <p className="mt-1 text-sm text-destructive">
+          <p className="text-sm text-destructive">
             {form.formState.errors.initialBalance.message}
           </p>
         )}
-      </div>
+      </fieldset>
 
-      <button
-        type="submit"
-        disabled={isPending || !form.formState.isValid}
-        className="w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
-      >
-        {isPending ? "Menyimpan..." : wallet ? "Simpan Perubahan" : "Tambah Wallet"}
-      </button>
+      <div className="md:col-span-2 flex flex-col-reverse gap-3 md:flex-row md:justify-end">
+        {onCancel && (
+          <Button type="button" variant="outline" className="w-full md:w-auto md:min-w-32" onClick={onCancel}>
+            Batal
+          </Button>
+        )}
+        <Button
+          type="submit"
+          className="w-full md:w-auto md:min-w-48"
+          disabled={isPending || !form.formState.isValid}
+        >
+          {isPending
+            ? "Menyimpan..."
+            : wallet
+              ? "Simpan Perubahan"
+              : "Tambah Wallet"}
+        </Button>
+      </div>
     </form>
   );
 }
