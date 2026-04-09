@@ -1,4 +1,4 @@
-const CACHE_NAME = "ledgerly-v2";
+const CACHE_NAME = "ledgerly-v3";
 const STATIC_ASSETS = ["/", "/manifest.json", "/icons/icon-192.png"];
 
 // Install — pre-cache static assets
