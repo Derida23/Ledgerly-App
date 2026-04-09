@@ -12,3 +12,7 @@
 /coverage/
 /test-results/
 /playwright-report/
+
+# Claude
+.claude/
+CLAUDE.md
