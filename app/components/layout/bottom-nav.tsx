@@ -19,7 +19,7 @@ const navItems = [
 export function BottomNav() {
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-30 border-t border-border bg-card md:hidden"
+      className="fixed bottom-3 inset-x-3 z-30 rounded-2xl bg-card/95 shadow-lg ring-1 ring-border/40 backdrop-blur-sm md:hidden"
       role="navigation"
     >
       <ul className="flex items-center justify-around">
@@ -29,7 +29,7 @@ export function BottomNav() {
               to={item.to}
               className={({ isActive }) =>
                 cn(
-                  "flex flex-col items-center gap-0.5 py-2 text-[10px] font-medium transition-colors",
+                  "flex flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium transition-colors",
                   isActive
                     ? "text-primary"
                     : "text-muted-foreground",
