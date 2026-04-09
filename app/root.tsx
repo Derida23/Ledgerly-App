@@ -43,13 +43,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="mobile-web-app-capable" content="yes" />
         <Meta />
         <Links />
-        {/* Non-render-blocking font: preload + media swap trick */}
-        <link
-          rel="preload"
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-          as="style"
-          crossOrigin="anonymous"
-        />
+        {/* Non-render-blocking font: media swap trick */}
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
